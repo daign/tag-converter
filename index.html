@@ -1,0 +1,286 @@
+<!doctype html>
+<html ng-app="TagConverter">
+<head>
+	<meta charset="utf-8">
+	<title>Tag Converter</title>
+	<link rel="stylesheet" href="css/tag-converter.css">
+	<script src="https://code.angularjs.org/1.3.9/angular.min.js"></script>
+	<script src="js/tag-converter.js"></script>
+</head>
+<body>
+
+	<div ng-controller="TagConverterController as tcc">
+		<form name="myForm">
+			<input
+				type="number"
+				id="decInput"
+				name="decInput"
+				ng-model="id"
+				min="0"
+				max="4095"
+			/>
+		</form>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			xmlns:xlink="http://www.w3.org/1999/xlink"
+			viewBox="0,0,400,480"
+			width="400"
+			height="480"
+			class="svg"
+		>
+			<defs>
+				<marker
+					id="arrow-start" viewBox="0 0 10 10" refX="5" refY="5"
+					markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto"
+				>
+					<path d="M 0 5 L 10 0 L 10 10 Z" />
+				</marker>
+				<marker
+					id="arrow-end" viewBox="0 0 10 10" refX="5" refY="5"
+					markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto"
+				>
+					<path d="M 0 0 L 10 5 L 0 10 Z" />
+				</marker>
+			</defs>
+			<rect width="400" height="480" x="0" y="0" rx="20" ry="20" class="background" />
+			<g transform="translate(200,200)" class="tag">
+				<g class="gridswitch" transform="translate(124,170)" ng-click="switchGrid()">
+					<rect x="-6" y="-18" width="60" height="24" rx="5" ry="5" />
+					<text x="0" y="0">{{ 'grid: ' + ( showGrid ? '&#10003;' : '&#10007;' ) }}</text>
+				</g>
+				<circle r="150" cx="0" cy="0" fill="#fff" />
+				<path
+					class="segment"
+					transform="rotate(0)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(0)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(0)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(30)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(1)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(1)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(60)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(2)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(2)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(90)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(3)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(3)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(120)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(4)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(4)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(150)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(5)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(5)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(180)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(6)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(6)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(210)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(7)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(7)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(240)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(8)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(8)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(270)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(9)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(9)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(300)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(10)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(10)"
+				/>
+				<path
+					class="segment"
+					transform="rotate(330)"
+					d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+					fill="{{getBinaryDigit(11)?'#fff':'#000'}}"
+					ng-click="setBinaryDigit(11)"
+				/>
+				<circle r="60" cx="0" cy="0" fill="#fff" />
+				<path d="M 0,0 L 60.5,0 A 60.5,60.5,0,0,1,-60.5,0 L 0,0 Z" fill="#000" />
+				<g class="power" ng-show="showGrid">
+					<text transform="rotate(15)" x="-4" y="-115">2⁰</text>
+					<text transform="rotate(45)" x="-4" y="-115">2¹</text>
+					<text transform="rotate(75)" x="-4" y="-115">2²</text>
+					<text transform="rotate(105)" x="-4" y="-115">2³</text>
+					<text transform="rotate(135)" x="-4" y="-115">2⁴</text>
+					<text transform="rotate(165)" x="-4" y="-115">2⁵</text>
+					<text transform="rotate(195)" x="-4" y="-115">2⁶</text>
+					<text transform="rotate(225)" x="-4" y="-115">2⁷</text>
+					<text transform="rotate(255)" x="-4" y="-115">2⁸</text>
+					<text transform="rotate(285)" x="-4" y="-115">2⁹</text>
+					<text transform="rotate(315)" x="-4" y="-115">2¹⁰</text>
+					<text transform="rotate(345)" x="-4" y="-115">2¹¹</text>
+				</g>
+				<g class="digit" ng-show="showGrid">
+					<text transform="rotate(15)" x="-8" y="-75"
+						fill="{{getBinaryDigit(0)?'#000':'#fff'}}">{{getBinaryDigit(0)}}</text>
+					<text transform="rotate(45)" x="-8" y="-75"
+						fill="{{getBinaryDigit(1)?'#000':'#fff'}}">{{getBinaryDigit(1)}}</text>
+					<text transform="rotate(75)" x="-8" y="-75"
+						fill="{{getBinaryDigit(2)?'#000':'#fff'}}">{{getBinaryDigit(2)}}</text>
+					<text transform="rotate(105)" x="-8" y="-75"
+						fill="{{getBinaryDigit(3)?'#000':'#fff'}}">{{getBinaryDigit(3)}}</text>
+					<text transform="rotate(135)" x="-8" y="-75"
+						fill="{{getBinaryDigit(4)?'#000':'#fff'}}">{{getBinaryDigit(4)}}</text>
+					<text transform="rotate(165)" x="-8" y="-75"
+						fill="{{getBinaryDigit(5)?'#000':'#fff'}}">{{getBinaryDigit(5)}}</text>
+					<text transform="rotate(195)" x="-8" y="-75"
+						fill="{{getBinaryDigit(6)?'#000':'#fff'}}">{{getBinaryDigit(6)}}</text>
+					<text transform="rotate(225)" x="-8" y="-75"
+						fill="{{getBinaryDigit(7)?'#000':'#fff'}}">{{getBinaryDigit(7)}}</text>
+					<text transform="rotate(255)" x="-8" y="-75"
+						fill="{{getBinaryDigit(8)?'#000':'#fff'}}">{{getBinaryDigit(8)}}</text>
+					<text transform="rotate(285)" x="-8" y="-75"
+						fill="{{getBinaryDigit(9)?'#000':'#fff'}}">{{getBinaryDigit(9)}}</text>
+					<text transform="rotate(315)" x="-8" y="-75"
+						fill="{{getBinaryDigit(10)?'#000':'#fff'}}">{{getBinaryDigit(10)}}</text>
+					<text transform="rotate(345)" x="-8" y="-75"
+						fill="{{getBinaryDigit(11)?'#000':'#fff'}}">{{getBinaryDigit(11)}}</text>
+				</g>
+				<g class="grid" ng-show="showGrid">
+					<circle r="110" cx="0" cy="0" />
+					<circle r="60" cx="0" cy="0" />
+					<path transform="rotate(0)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(30)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(60)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(90)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(120)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(150)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(180)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(210)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(240)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(270)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(300)" d="M 0,-60 L 0,-110" />
+					<path transform="rotate(330)" d="M 0,-60 L 0,-110" />
+				</g>
+				<g class="direction" ng-show="showGrid">
+					<g transform="rotate(15)">
+						<path d="M 0,-175 L 0,-165" />
+						<path
+							d="M 0,-170 A 170,170,0,0,1,147.22,-85"
+							marker-end="url(#arrow-end)"
+						/>
+						<path
+							id="sigPath"
+							d="M 0,-180 A 180,180,0,0,1,155.88,-90"
+							class="align"
+						/>
+						<text><textPath xlink:href="#sigPath" startOffset="50">
+							significance
+						</textPath></text>
+					</g>
+					<g transform="rotate(-15)">
+						<path d="M 0,-175 L 0,-165" />
+						<path
+							d="M -147.22,-85 A 170,170,0,0,1,0,-170"
+							marker-start="url(#arrow-start)"
+						/>
+						<path
+							id="readPath"
+							d="M -155.88,-90 A 180,180,0,0,1,0,-180"
+							class="align"
+						/>
+						<text><textPath xlink:href="#readPath" startOffset="35">
+							reading direction
+						</textPath></text>
+					</g>
+				</g>
+			</g>
+			<g transform="translate(20,410)" class="number">
+				<text x="0" y="0">decimal:</text>
+				<!--<text x="100" y="0">{{id}}</text>-->
+				<text x="210" y="0">{{ ( myForm.decInput.$valid ? '' : '&#10007;' ) }}</text>
+				<text x="0" y="40">binary:</text>
+				<g class="digit" transform="translate(100,40)" ng-click="setBinaryDigit(11)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(11)}}</text>
+				</g>
+				<g class="digit" transform="translate(122,40)" ng-click="setBinaryDigit(10)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(10)}}</text>
+				</g>
+				<g class="digit" transform="translate(144,40)" ng-click="setBinaryDigit(9)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(9)}}</text>
+				</g>
+				<g class="digit" transform="translate(166,40)" ng-click="setBinaryDigit(8)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(8)}}</text>
+				</g>
+				<g class="digit" transform="translate(188,40)" ng-click="setBinaryDigit(7)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(7)}}</text>
+				</g>
+				<g class="digit" transform="translate(210,40)" ng-click="setBinaryDigit(6)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(6)}}</text>
+				</g>
+				<g class="digit" transform="translate(232,40)" ng-click="setBinaryDigit(5)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(5)}}</text>
+				</g>
+				<g class="digit" transform="translate(254,40)" ng-click="setBinaryDigit(4)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(4)}}</text>
+				</g>
+				<g class="digit" transform="translate(276,40)" ng-click="setBinaryDigit(3)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(3)}}</text>
+				</g>
+				<g class="digit" transform="translate(298,40)" ng-click="setBinaryDigit(2)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(2)}}</text>
+				</g>
+				<g class="digit" transform="translate(320,40)" ng-click="setBinaryDigit(1)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(1)}}</text>
+				</g>
+				<g class="digit" transform="translate(342,40)" ng-click="setBinaryDigit(0)">
+					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30"/>
+					<text>{{getBinaryDigit(0)}}</text>
+				</g>
+			</g>
+		</svg>
+	</div>
+
+</body>
+</html>
+

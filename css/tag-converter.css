@@ -1,0 +1,70 @@
+body {
+	font-family: sans-serif;
+}
+#decInput {
+	position: absolute;
+	width: 106px;
+	left: 123px;
+	top: 391px;
+	font-size: 24px;
+}
+.svg marker path {
+	fill: #666;
+}
+.svg .background {
+	fill: #ccc;
+}
+.svg .tag {
+	stroke: none;
+	font-size: 16px;
+}
+.svg .tag .gridswitch {
+	cursor: pointer;
+}
+.svg .tag .gridswitch rect {
+	fill: #ddd;
+}
+.svg .tag .gridswitch text {
+	fill: #999;
+}
+.svg .tag .segment {
+	cursor: pointer;
+}
+.svg .tag .power text {
+	fill: #999;
+	stroke: none;
+}
+.svg .tag .digit text {
+	stroke: none;
+	font-size: 24px;
+	pointer-events: none;
+}
+.svg .tag .grid {
+	fill: none;
+	stroke: #999;
+	stroke-width: 2;
+}
+.svg .tag .direction path {
+	fill: none;
+	stroke: #666;
+	stroke-width: 2;
+}
+.svg .tag .direction path.align {
+	fill: none;
+	stroke: none;
+}
+.svg .tag .direction text {
+	fill: #666;
+	stroke: none;
+}
+.svg .number {
+	font-size: 24px;
+}
+.svg .number text {
+	pointer-events: none;
+}
+.svg .number rect {
+	fill: #fff;
+	cursor: pointer;
+}
+
