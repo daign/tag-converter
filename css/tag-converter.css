@@ -14,10 +14,6 @@ body {
 .svg .background {
 	fill: #ccc;
 }
-.svg .tag {
-	stroke: none;
-	font-size: 16px;
-}
 .svg .tag .gridswitch {
 	cursor: pointer;
 }
@@ -26,18 +22,21 @@ body {
 }
 .svg .tag .gridswitch text {
 	fill: #999;
+	font-size: 16px;
 }
 .svg .tag .segment {
 	cursor: pointer;
 }
-.svg .tag .power text {
-	fill: #999;
-	stroke: none;
-}
 .svg .tag .digit text {
-	stroke: none;
 	font-size: 24px;
 	pointer-events: none;
+}
+.svg .tag .digit .power text {
+	fill: #999;
+	font-size: 16px;
+}
+.svg .tag .digit .power text.small {
+	font-size: 10px;
 }
 .svg .tag .grid {
 	fill: none;
@@ -50,12 +49,11 @@ body {
 	stroke-width: 2;
 }
 .svg .tag .direction path.align {
-	fill: none;
 	stroke: none;
 }
 .svg .tag .direction text {
 	fill: #666;
-	stroke: none;
+	font-size: 16px;
 }
 .svg .number {
 	font-size: 24px;
@@ -63,7 +61,7 @@ body {
 .svg .number text {
 	pointer-events: none;
 }
-.svg .number rect {
+.svg .number .digit rect {
 	fill: #fff;
 	cursor: pointer;
 }
