@@ -13,7 +13,7 @@
 
 		<form name="myForm">
 			<input
-				ng-show="readingMode == 0"
+				ng-show="mode == 0"
 				class="numberInput"
 				type="number"
 				id="decoderInput"
@@ -23,7 +23,7 @@
 				max="4095"
 			/>
 			<input
-				ng-show="readingMode == 1"
+				ng-show="mode == 1"
 				class="numberInput"
 				type="number"
 				id="preparationInput"
@@ -45,16 +45,22 @@
 
 			<defs>
 				<marker
+					id="line" viewBox="0 0 10 10" refX="5" refY="5"
+					markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto"
+				>
+					<path class="line" d="M 5 0 L 5 10" />
+				</marker>
+				<marker
 					id="arrow-start" viewBox="0 0 10 10" refX="5" refY="5"
 					markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto"
 				>
-					<path d="M 0 5 L 10 0 L 10 10 Z" />
+					<path class="arrow" d="M 0 5 L 10 0 L 10 10 Z" />
 				</marker>
 				<marker
 					id="arrow-end" viewBox="0 0 10 10" refX="5" refY="5"
 					markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto"
 				>
-					<path d="M 0 0 L 10 5 L 0 10 Z" />
+					<path class="arrow" d="M 0 0 L 10 5 L 0 10 Z" />
 				</marker>
 			</defs>
 
@@ -114,33 +120,27 @@
 					</g>
 
 					<!-- digit significance -->
-					<g class="significance">
-						<g
-							ng-show="readingMode === 0"
-							ng-repeat="d in digits track by $index"
-							ng-attr-transform="rotate({{ $index*30 +15 }})"
-						>
+					<g
+						class="significance"
+						ng-repeat="s in modeDefs[mode].significance track by $index"
+						ng-attr-transform="rotate({{ $index*30 + 15 }})"
+					>
+						<g ng-if="Number.isInteger(s)">
 							<text x="-4" y="-115">2</text>
-							<text class="small" x="6" y="-120">{{ $index }}</text>
+							<text class="small" x="6" y="-120">{{ s }}</text>
 						</g>
-						<g
-							ng-show="readingMode === 2"
-							ng-repeat="d in digits track by $index"
-							ng-attr-transform="rotate({{ $index*30 +15 }})"
-						>
-							<text x="-4" y="-115">2</text>
-							<text class="small" x="6" y="-120">{{ $index }}</text>
+						<g ng-if="s === 'parity'">
+							<text x="-20" y="-116">parity</text>
 						</g>
-						<text ng-show="readingMode === 1" x="-20" y="-116" transform="rotate(255)">parity</text>
 					</g>
 
-					<!-- direction annotations decoder -->
-					<g class="direction" ng-show="readingMode === 0">
-						<g transform="rotate(15)">
-							<path d="M 0,-175 L 0,-165" />
+					<!-- direction annotations -->
+					<g class="direction">
+						<g ng-attr-transform="rotate({{ modeDefs[mode].sig.rot }})">
 							<path
 								d="M 0,-170 A 170,170,0,0,1,147.22,-85"
-								marker-end="url(#arrow-end)"
+								ng-attr-marker-start="{{ modeDefs[mode].sig.dir > 0 ? 'url(#line)'      : 'url(#arrow-start)' }}"
+								ng-attr-marker-end="{{   modeDefs[mode].sig.dir > 0 ? 'url(#arrow-end)' : 'url(#line)' }}"
 							/>
 							<path
 								id="sigPath"
@@ -151,53 +151,19 @@
 								significance
 							</textPath></text>
 						</g>
-						<g transform="rotate(-15)">
-							<path d="M 0,-175 L 0,-165" />
+						<g ng-attr-transform="rotate({{ modeDefs[mode].read.rot }})">
 							<path
-								d="M -147.22,-85 A 170,170,0,0,1,0,-170"
-								marker-start="url(#arrow-start)"
+								d="M 0,-170 A 170,170,0,0,1,147.22,-85"
+								ng-attr-marker-start="{{ modeDefs[mode].read.dir > 0 ? 'url(#line)'      : 'url(#arrow-start)' }}"
+								ng-attr-marker-end="{{   modeDefs[mode].read.dir > 0 ? 'url(#arrow-end)' : 'url(#line)' }}"
 							/>
 							<path
 								id="readPath"
-								d="M -155.88,-90 A 180,180,0,0,1,0,-180"
+								d="M 0,-180 A 180,180,0,0,1,155.88,-90"
 								class="align"
 							/>
 							<text><textPath xlink:href="#readPath" startOffset="35">
 								reading direction
-							</textPath></text>
-						</g>
-					</g>
-
-					<!-- direction annotations preparation -->
-					<g class="direction" ng-show="readingMode === 1">
-						<g transform="rotate(285)">
-							<path d="M 0,-175 L 0,-165" />
-							<path
-								d="M 0,-170 A 170,170,0,0,1,147.22,-85"
-								marker-end="url(#arrow-end)"
-							/>
-							<path
-								id="sigPath"
-								d="M 0,-180 A 180,180,0,0,1,155.88,-90"
-								class="align"
-							/>
-							<text><textPath xlink:href="#sigPath" startOffset="35">
-								reading direction
-							</textPath></text>
-						</g>
-						<g transform="rotate(-135)">
-							<path d="M 0,-175 L 0,-165" />
-							<path
-								d="M -147.22,-85 A 170,170,0,0,1,0,-170"
-								marker-start="url(#arrow-start)"
-							/>
-							<path
-								id="readPath"
-								d="M -155.88,-90 A 180,180,0,0,1,0,-180"
-								class="align"
-							/>
-							<text><textPath xlink:href="#readPath" startOffset="50">
-								significance
 							</textPath></text>
 						</g>
 					</g>
@@ -211,8 +177,8 @@
 
 				<!-- decoder tab -->
 				<g
-					class="{{readingMode === 0 ? 'tab on' : 'tab off'}}"
-					ng-click="setReadingMode(0)"
+					class="{{mode === 0 ? 'tab on' : 'tab off'}}"
+					ng-click="setMode(0)"
 				>
 					<rect width="200" height="30" x="0" y="0" />
 					<text x="10" y="20">decoder</text>
@@ -220,8 +186,8 @@
 
 				<!-- preparation tab -->
 				<g
-					class="{{readingMode === 1 ? 'tab on' : 'tab off'}}"
-					ng-click="setReadingMode(1)"
+					class="{{mode === 1 ? 'tab on' : 'tab off'}}"
+					ng-click="setMode(1)"
 					transform="translate(200,0)"
 				>
 					<rect width="200" height="30" x="0" y="0" />
@@ -233,34 +199,36 @@
 					<rect class="background" width="400" height="140" x="0" y="30" />
 
 					<!-- decoder conversion content -->
-					<g ng-show="readingMode == 0" transform="translate(20,70)">
+					<g ng-show="mode == 0" transform="translate(20,70)">
 						<text x="0" y="0">decimal:</text>
 						<text x="210" y="0">{{ myForm.decoderInput.$valid ? '' : '&#10007;' }}</text>
 						<text x="0" y="40">binary:</text>
 						<g
 							class="digit"
-							ng-repeat="d in decoderDigits"
-							ng-attr-transform="translate({{ $index*22 + 100 }},40)"
-							ng-click="flipDigit(d)"
+							ng-repeat="s in modeDefs[ 0 ].significance track by $index"
+							ng-if="Number.isInteger(s)"
+							ng-attr-transform="translate({{ s*-22 + 342 }},40)"
+							ng-click="flipDigit($index)"
 						>
 							<rect x="-4" y="-24" width="20" height="30" />
-							<text>{{ digits[d] }}</text>
+							<text>{{ digits[$index] }}</text>
 						</g>
 					</g>
 
 					<!-- preparation conversion content -->
-					<g ng-show="readingMode == 1" transform="translate(20,70)">
+					<g ng-show="mode == 1" transform="translate(20,70)">
 						<text x="0" y="0">decimal:</text>
 						<text x="210" y="0">{{ myForm.preparationInput.$valid ? '' : '&#10007;' }}</text>
 						<text x="0" y="40">binary:</text>
 						<g
 							class="digit"
-							ng-repeat="d in preparationDigits"
-							ng-attr-transform="translate({{ $index*22 + 100 }},40)"
-							ng-click="flipDigit(d)"
+							ng-repeat="s in modeDefs[ 1 ].significance track by $index"
+							ng-if="Number.isInteger(s)"
+							ng-attr-transform="translate({{ s*-22 + 320 }},40)"
+							ng-click="flipDigit($index)"
 						>
 							<rect x="-4" y="-24" width="20" height="30" />
-							<text>{{ digits[d] }}</text>
+							<text>{{ digits[$index] }}</text>
 						</g>
 						<text x="0" y="80">parity:</text>
 						<g
@@ -268,9 +236,10 @@
 							transform="translate(100,80)"
 							ng-click="flipDigit(8)"
 						>
-							<rect x="-4" y="-24" width="60" height="30" />
-							<text>{{ digits[8] ? 'true' : 'false' }}</text>
+							<rect x="-4" y="-24" width="20" height="30" />
+							<text>{{ digits[8] }}</text>
 						</g>
+						<text x="120" y="80">{{ parity() ? '&#10003;' : '&#10007;' }}</text>
 					</g>
 				</g>
 

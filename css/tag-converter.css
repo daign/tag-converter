@@ -10,8 +10,9 @@ body {
 	font-size: 24px;
 }
 
-.svg marker path { fill: #666; }
-.svg text        { pointer-events: none; }
+.svg text          { pointer-events: none; }
+.svg marker .line  { fill: none; stroke: #666; stroke-width: 2px; }
+.svg marker .arrow { fill: #666; }
 
 .svg .tag .background { fill: #ccc; }
 .svg .tag .disc       { fill: #fff; }
