@@ -4,28 +4,42 @@
 	<meta charset="utf-8">
 	<title>Tag Converter</title>
 	<link rel="stylesheet" href="css/tag-converter.css">
-	<script src="https://code.angularjs.org/1.3.9/angular.min.js"></script>
+	<script src="https://code.angularjs.org/1.4.4/angular.min.js"></script>
 	<script src="js/tag-converter.js"></script>
 </head>
 <body>
 
 	<div ng-controller="TagConverterController as tcc">
+
 		<form name="myForm">
 			<input
+				ng-show="readingMode == 0"
+				class="numberInput"
 				type="number"
-				id="decInput"
-				name="decInput"
-				ng-model="id"
+				id="decoderInput"
+				name="decoderInput"
+				ng-model="decoderId"
 				min="0"
 				max="4095"
 			/>
+			<input
+				ng-show="readingMode == 1"
+				class="numberInput"
+				type="number"
+				id="preparationInput"
+				name="preparationInput"
+				ng-model="preparationId"
+				min="0"
+				max="2047"
+			/>
 		</form>
+
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			xmlns:xlink="http://www.w3.org/1999/xlink"
-			viewBox="0,0,400,480"
+			viewBox="0,0,400,570"
 			width="400"
-			height="480"
+			height="570"
 			class="svg"
 		>
 
@@ -44,97 +58,222 @@
 				</marker>
 			</defs>
 
-			<rect class="background" width="400" height="480" x="0" y="0" rx="20" ry="20" />
-
 			<g class="tag" transform="translate(200,200)">
 
-				<g class="gridswitch" transform="translate(124,170)" ng-click="switchGrid()">
-					<rect x="-6" y="-18" width="60" height="24" rx="5" ry="5" />
-					<text x="0" y="0">{{ 'grid: ' + ( showGrid ? '&#10003;' : '&#10007;' ) }}</text>
+				<rect class="background" width="400" height="400" x="-200" y="-200" />
+
+				<!-- tag disc -->
+				<circle class="disc" r="150" cx="0" cy="0" />
+
+				<!-- ring segments -->
+				<g
+					class="segments"
+					ng-repeat="d in digits track by $index"
+					ng-attr-transform="rotate({{ $index*30 }})"
+				>
+					<path
+						class="{{ digits[$index] ? 'area one' : 'area zero' }}"
+						d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+						ng-click="flipDigit($index)"
+					/>
+					<text
+						class="{{ digits[$index] ? 'value one' : 'value zero' }}"
+						ng-show="showGrid"
+						transform="rotate(15)"
+						x="-8"
+						y="-75"
+					>
+						{{ digits[$index] }}
+					</text>
 				</g>
 
-				<circle r="150" cx="0" cy="0" fill="#fff" />
+				<!-- center section -->
+				<g class="center">
+					<circle class="top" r="60" cx="0" cy="0" />
+					<path class="bottom" d="M 0,0 L 60.5,0 A 60.5,60.5,0,0,1,-60.5,0 L 0,0 Z" />
+				</g>
 
-				<g ng-repeat="d in digits" ng-attr-transform="rotate({{ d*30 }})">
-					<path
-						class="segment"
-						d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
-						fill="{{ getBinaryDigit(d) ? '#fff' : '#000' }}"
-						ng-click="setBinaryDigit(d)"
-					/>
-					<g class="digit" ng-show="showGrid" transform="rotate(15)">
-						<text x="-8" y="-75" fill="{{ getBinaryDigit(d) ? '#000' : '#fff' }}">
-							{{ getBinaryDigit(d) }}
-						</text>
-						<g class="power">
+				<!-- toggle grid visibility -->
+				<g class="gridToggle" transform="translate(130,150)" ng-click="toggleShowGrid()">
+					<rect class="{{showGrid ? 'on' : 'off'}}" x="0" y="0" width="50" height="30" />
+					<text x="10" y="20">grid</text>
+				</g>
+
+				<!-- grid -->
+				<g class="grid" ng-show="showGrid">
+
+					<!-- grid lines -->
+					<g class="lines">
+						<circle r="110" cx="0" cy="0" />
+						<circle r="60" cx="0" cy="0" />
+						<path
+							ng-repeat="d in digits track by $index"
+							ng-attr-transform="rotate({{ $index*30 }})"
+							d="M 0,-60 L 0,-110"
+						/>
+					</g>
+
+					<!-- digit significance -->
+					<g class="significance">
+						<g
+							ng-show="readingMode === 0"
+							ng-repeat="d in digits track by $index"
+							ng-attr-transform="rotate({{ $index*30 +15 }})"
+						>
 							<text x="-4" y="-115">2</text>
-							<text class="small" x="6" y="-120">{{ d }}</text>
+							<text class="small" x="6" y="-120">{{ $index }}</text>
+						</g>
+						<g
+							ng-show="readingMode === 2"
+							ng-repeat="d in digits track by $index"
+							ng-attr-transform="rotate({{ $index*30 +15 }})"
+						>
+							<text x="-4" y="-115">2</text>
+							<text class="small" x="6" y="-120">{{ $index }}</text>
+						</g>
+						<text ng-show="readingMode === 1" x="-20" y="-116" transform="rotate(255)">parity</text>
+					</g>
+
+					<!-- direction annotations decoder -->
+					<g class="direction" ng-show="readingMode === 0">
+						<g transform="rotate(15)">
+							<path d="M 0,-175 L 0,-165" />
+							<path
+								d="M 0,-170 A 170,170,0,0,1,147.22,-85"
+								marker-end="url(#arrow-end)"
+							/>
+							<path
+								id="sigPath"
+								d="M 0,-180 A 180,180,0,0,1,155.88,-90"
+								class="align"
+							/>
+							<text><textPath xlink:href="#sigPath" startOffset="50">
+								significance
+							</textPath></text>
+						</g>
+						<g transform="rotate(-15)">
+							<path d="M 0,-175 L 0,-165" />
+							<path
+								d="M -147.22,-85 A 170,170,0,0,1,0,-170"
+								marker-start="url(#arrow-start)"
+							/>
+							<path
+								id="readPath"
+								d="M -155.88,-90 A 180,180,0,0,1,0,-180"
+								class="align"
+							/>
+							<text><textPath xlink:href="#readPath" startOffset="35">
+								reading direction
+							</textPath></text>
 						</g>
 					</g>
-				</g>
 
-				<circle r="60" cx="0" cy="0" fill="#fff" />
-				<path d="M 0,0 L 60.5,0 A 60.5,60.5,0,0,1,-60.5,0 L 0,0 Z" fill="#000" />
-
-				<g class="grid" ng-show="showGrid">
-					<circle r="110" cx="0" cy="0" />
-					<circle r="60" cx="0" cy="0" />
-					<path
-						ng-repeat="d in digits"
-						ng-attr-transform="rotate({{ d*30 }})"
-						d="M 0,-60 L 0,-110"
-					/>
-				</g>
-
-				<g class="direction" ng-show="showGrid">
-					<g transform="rotate(15)">
-						<path d="M 0,-175 L 0,-165" />
-						<path
-							d="M 0,-170 A 170,170,0,0,1,147.22,-85"
-							marker-end="url(#arrow-end)"
-						/>
-						<path
-							id="sigPath"
-							d="M 0,-180 A 180,180,0,0,1,155.88,-90"
-							class="align"
-						/>
-						<text><textPath xlink:href="#sigPath" startOffset="50">
-							significance
-						</textPath></text>
+					<!-- direction annotations preparation -->
+					<g class="direction" ng-show="readingMode === 1">
+						<g transform="rotate(285)">
+							<path d="M 0,-175 L 0,-165" />
+							<path
+								d="M 0,-170 A 170,170,0,0,1,147.22,-85"
+								marker-end="url(#arrow-end)"
+							/>
+							<path
+								id="sigPath"
+								d="M 0,-180 A 180,180,0,0,1,155.88,-90"
+								class="align"
+							/>
+							<text><textPath xlink:href="#sigPath" startOffset="35">
+								reading direction
+							</textPath></text>
+						</g>
+						<g transform="rotate(-135)">
+							<path d="M 0,-175 L 0,-165" />
+							<path
+								d="M -147.22,-85 A 170,170,0,0,1,0,-170"
+								marker-start="url(#arrow-start)"
+							/>
+							<path
+								id="readPath"
+								d="M -155.88,-90 A 180,180,0,0,1,0,-180"
+								class="align"
+							/>
+							<text><textPath xlink:href="#readPath" startOffset="50">
+								significance
+							</textPath></text>
+						</g>
 					</g>
-					<g transform="rotate(-15)">
-						<path d="M 0,-175 L 0,-165" />
-						<path
-							d="M -147.22,-85 A 170,170,0,0,1,0,-170"
-							marker-start="url(#arrow-start)"
-						/>
-						<path
-							id="readPath"
-							d="M -155.88,-90 A 180,180,0,0,1,0,-180"
-							class="align"
-						/>
-						<text><textPath xlink:href="#readPath" startOffset="35">
-							reading direction
-						</textPath></text>
-					</g>
+
 				</g>
 
 			</g>
 
-			<g transform="translate(20,410)" class="number">
-				<text x="0" y="0">decimal:</text>
-				<!--<text x="100" y="0">{{ id }}</text>-->
-				<text x="210" y="0">{{ myForm.decInput.$valid ? '' : '&#10007;' }}</text>
-				<text x="0" y="40">binary:</text>
+			<!-- conversion -->
+			<g class="conversion" transform="translate(0,400)">
+
+				<!-- decoder tab -->
 				<g
-					class="digit"
-					ng-repeat="d in digits"
-					ng-attr-transform="translate({{ d*-22 + 342 }},40)"
-					ng-click="setBinaryDigit(d)"
+					class="{{readingMode === 0 ? 'tab on' : 'tab off'}}"
+					ng-click="setReadingMode(0)"
 				>
-					<rect x="-4" y="-24" rx="5" ry="5" width="20" height="30" />
-					<text>{{ getBinaryDigit(d) }}</text>
+					<rect width="200" height="30" x="0" y="0" />
+					<text x="10" y="20">decoder</text>
 				</g>
+
+				<!-- preparation tab -->
+				<g
+					class="{{readingMode === 1 ? 'tab on' : 'tab off'}}"
+					ng-click="setReadingMode(1)"
+					transform="translate(200,0)"
+				>
+					<rect width="200" height="30" x="0" y="0" />
+					<text x="10" y="20">preparation</text>
+				</g>
+
+				<!-- conversion content -->
+				<g class="content">
+					<rect class="background" width="400" height="140" x="0" y="30" />
+
+					<!-- decoder conversion content -->
+					<g ng-show="readingMode == 0" transform="translate(20,70)">
+						<text x="0" y="0">decimal:</text>
+						<text x="210" y="0">{{ myForm.decoderInput.$valid ? '' : '&#10007;' }}</text>
+						<text x="0" y="40">binary:</text>
+						<g
+							class="digit"
+							ng-repeat="d in decoderDigits"
+							ng-attr-transform="translate({{ $index*22 + 100 }},40)"
+							ng-click="flipDigit(d)"
+						>
+							<rect x="-4" y="-24" width="20" height="30" />
+							<text>{{ digits[d] }}</text>
+						</g>
+					</g>
+
+					<!-- preparation conversion content -->
+					<g ng-show="readingMode == 1" transform="translate(20,70)">
+						<text x="0" y="0">decimal:</text>
+						<text x="210" y="0">{{ myForm.preparationInput.$valid ? '' : '&#10007;' }}</text>
+						<text x="0" y="40">binary:</text>
+						<g
+							class="digit"
+							ng-repeat="d in preparationDigits"
+							ng-attr-transform="translate({{ $index*22 + 100 }},40)"
+							ng-click="flipDigit(d)"
+						>
+							<rect x="-4" y="-24" width="20" height="30" />
+							<text>{{ digits[d] }}</text>
+						</g>
+						<text x="0" y="80">parity:</text>
+						<g
+							class="digit"
+							transform="translate(100,80)"
+							ng-click="flipDigit(8)"
+						>
+							<rect x="-4" y="-24" width="60" height="30" />
+							<text>{{ digits[8] ? 'true' : 'false' }}</text>
+						</g>
+					</g>
+				</g>
+
 			</g>
 
 		</svg>
