@@ -14,23 +14,50 @@
 		<form name="myForm">
 			<input
 				ng-show="mode == 0"
-				class="numberInput"
+				class="decimalInput"
 				type="number"
-				id="decoderInput"
-				name="decoderInput"
-				ng-model="decoderId"
+				id="decoderDecimalInput"
+				name="decoderDecimalInput"
+				ng-model="decoderDecimal"
 				min="0"
 				max="4095"
 			/>
 			<input
+				ng-show="mode == 0"
+				class="binaryInput"
+				type="text"
+				ng-maxlength="12"
+				id="decoderBinaryInput"
+				name="decoderBinaryInput"
+				ng-model="decoderBinary"
+			/>
+			<input
 				ng-show="mode == 1"
-				class="numberInput"
+				class="decimalInput"
 				type="number"
-				id="preparationInput"
-				name="preparationInput"
-				ng-model="preparationId"
+				id="preparationDecimalInput"
+				name="preparationDecimalInput"
+				ng-model="preparationDecimal"
 				min="0"
 				max="2047"
+			/>
+			<input
+				ng-show="mode == 1"
+				class="binaryInput"
+				type="text"
+				ng-maxlength="12"
+				id="preparationBinaryInput"
+				name="preparationBinaryInput"
+				ng-model="preparationBinary"
+			/>
+			<input
+				ng-show="mode == 1"
+				class="parityInput"
+				type="text"
+				ng-maxlength="1"
+				id="preparationParityInput"
+				name="preparationParityInput"
+				ng-model="preparationParity"
 			/>
 		</form>
 
@@ -201,45 +228,19 @@
 					<!-- decoder conversion content -->
 					<g ng-show="mode == 0" transform="translate(20,70)">
 						<text x="0" y="0">decimal:</text>
-						<text x="210" y="0">{{ myForm.decoderInput.$valid ? '' : '&#10007;' }}</text>
+						<text x="215" y="0">{{ myForm.decoderDecimalInput.$valid ? '' : '&#10007;' }}</text>
 						<text x="0" y="40">binary:</text>
-						<g
-							class="digit"
-							ng-repeat="s in modeDefs[ 0 ].significance track by $index"
-							ng-if="Number.isInteger(s)"
-							ng-attr-transform="translate({{ s*-22 + 342 }},40)"
-							ng-click="flipDigit($index)"
-						>
-							<rect x="-4" y="-24" width="20" height="30" />
-							<text>{{ digits[$index] }}</text>
-						</g>
+						<text x="315" y="40">{{ myForm.decoderBinaryInput.$valid ? '' : '&#10007;' }}</text>
 					</g>
 
 					<!-- preparation conversion content -->
 					<g ng-show="mode == 1" transform="translate(20,70)">
 						<text x="0" y="0">decimal:</text>
-						<text x="210" y="0">{{ myForm.preparationInput.$valid ? '' : '&#10007;' }}</text>
+						<text x="215" y="0">{{ myForm.preparationDecimalInput.$valid ? '' : '&#10007;' }}</text>
 						<text x="0" y="40">binary:</text>
-						<g
-							class="digit"
-							ng-repeat="s in modeDefs[ 1 ].significance track by $index"
-							ng-if="Number.isInteger(s)"
-							ng-attr-transform="translate({{ s*-22 + 320 }},40)"
-							ng-click="flipDigit($index)"
-						>
-							<rect x="-4" y="-24" width="20" height="30" />
-							<text>{{ digits[$index] }}</text>
-						</g>
+						<text x="315" y="40">{{ myForm.preparationBinaryInput.$valid ? '' : '&#10007;' }}</text>
 						<text x="0" y="80">parity:</text>
-						<g
-							class="digit"
-							transform="translate(100,80)"
-							ng-click="flipDigit(8)"
-						>
-							<rect x="-4" y="-24" width="20" height="30" />
-							<text>{{ digits[8] }}</text>
-						</g>
-						<text x="120" y="80">{{ parity() ? '&#10003;' : '&#10007;' }}</text>
+						<text x="135" y="80">{{ checkParity() ? '&#10003;' : '&#10007;' }}</text>
 					</g>
 				</g>
 

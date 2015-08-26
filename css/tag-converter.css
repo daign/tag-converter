@@ -1,14 +1,8 @@
-body {
-	font-family: sans-serif;
-}
+body { font-family: sans-serif; }
 
-.numberInput {
-	position: absolute;
-	width: 106px;
-	left: 123px;
-	top: 451px;
-	font-size: 24px;
-}
+.decimalInput { position: absolute; width: 100px; left: 130px; top: 451px; font-size: 24px; }
+.binaryInput  { position: absolute; width: 200px; left: 130px; top: 491px; font-size: 24px; }
+.parityInput  { position: absolute; width: 20px;  left: 130px; top: 531px; font-size: 24px; }
 
 .svg text          { pointer-events: none; }
 .svg marker .line  { fill: none; stroke: #666; stroke-width: 2px; }

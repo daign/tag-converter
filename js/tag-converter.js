@@ -31,9 +31,9 @@ app.controller( 'TagConverterController', function ( $scope ) {
 		}
 	];
 
-	var toInt = function ( mode ) {
+	var calculateDecimal = function ( digits, mode ) {
 		var sum = 0;
-		$scope.digits.forEach( function ( v, i ) {
+		digits.forEach( function ( v, i ) {
 			var s = $scope.modeDefs[ mode ].significance[ i ];
 			if ( Number.isInteger( s ) ) {
 				sum += v * Math.pow( 2, s );
@@ -41,41 +41,99 @@ app.controller( 'TagConverterController', function ( $scope ) {
 		} );
 		return sum;
 	};
-	var toArray = function ( int, mode ) {
-		var result = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
-		var i = 0;
-		while ( int > 0 ) {
-			result[ i ] = ( int & 1 );
-			int >>= 1;
-			i++;
-		}
+	var calculateBinary = function ( digits, mode ) {
+		var array = [];
 		$scope.modeDefs[ mode ].significance.forEach( function ( s, i ) {
 			if ( Number.isInteger( s ) ) {
-				$scope.digits[ i ] = result[ s ];
+				array[ s ] = digits[ i ];
 			}
 		} );
+		return array.reverse().join( '' );
+	};
+	var decimalToBinary = function ( decimal, mode ) {
+		if ( mode === 0 ) {
+			var array = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
+		} else if ( mode === 1 ) {
+			var array = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
+		} else {
+			return '';
+		}
+		var i = 0;
+		while ( decimal > 0 ) {
+			array[ i ] = ( decimal & 1 );
+			decimal >>= 1;
+			i++;
+		}
+		return array.reverse().join( '' );
+	};
+	var binaryToDigits = function ( binary, mode ) {
+		var digits = [];
+		var array = binary.split( '' ).reverse();
+		$scope.modeDefs[ mode ].significance.forEach( function ( s, i ) {
+			if ( Number.isInteger( s ) ) {
+				digits[ i ] = array[ s ];
+			}
+		} );
+		return digits;
 	};
 
-	$scope.decoderId = 705;
-	$scope.$watchCollection( 'digits', function () { $scope.decoderId = toInt( 0 ); } );
-	$scope.$watch( 'decoderId', function () { toArray( $scope.decoderId, 0 ); } );
 
-	$scope.preparationId = 1155;
-	$scope.$watchCollection( 'digits', function () { $scope.preparationId = toInt( 1 ); } );
-	$scope.$watch( 'preparationId', function () {
-		var p = $scope.parity();
-		toArray( $scope.preparationId, 1 );
-		if ( $scope.parity() !== p ) {
-			$scope.digits[ 8 ] = $scope.digits[ 8 ] ^ 1;
-		}
+	$scope.decoderDecimal = 705;
+	$scope.decoderBinary = '001011000001';
+
+	$scope.preparationDecimal = 1155;
+	$scope.preparationBinary = '10010000011';
+	$scope.preparationParity = '0';
+
+	$scope.$watchCollection( 'digits', function () {
+		$scope.decoderDecimal = calculateDecimal( $scope.digits, 0 );
+		$scope.decoderBinary  = calculateBinary(  $scope.digits, 0 );
+		$scope.preparationDecimal = calculateDecimal( $scope.digits, 1 );
+		$scope.preparationBinary  = calculateBinary(  $scope.digits, 1 );
+		$scope.preparationParity = $scope.digits[ 8 ];
+	} );
+	$scope.$watch( 'decoderDecimal', function () {
+		$scope.decoderBinary = decimalToBinary( $scope.decoderDecimal, 0 );
+	} );
+	$scope.$watch( 'preparationDecimal', function () {
+		$scope.preparationBinary = decimalToBinary( $scope.preparationDecimal, 1 );
+	} );
+	$scope.$watch( 'decoderBinary', function () {
+		$scope.decoderBinary = $scope.decoderBinary.replace( /[^01]/g, '' );
+		$scope.digits = binaryToDigits( $scope.decoderBinary, 0 );
+	} );
+	$scope.$watch( 'preparationBinary', function () {
+		$scope.digits = binaryToDigits( $scope.preparationBinary, 1 );
+	} );
+	$scope.$watch( 'preparationParity', function () {
+		$scope.digits[ 8 ] = $scope.preparationParity;
 	} );
 
-	$scope.parity = function () {
+	$scope.checkParity = function () {
 		var sum = $scope.digits.reduce( function ( a, b, i ) {
 			return a + ( i !== 8 ? b : 0 );
 		} );
-		return $scope.digits[ 8 ] === ( sum & 1 );
+		return ( parseInt( $scope.preparationParity ) === ( sum & 1 ) );
 	};
+
+	( function () {
+		// Tests
+		var digits = [ 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0 ];
+		var decoderDecimal = 705;
+		var decoderBinary = '001011000001';
+		var preparationDecimal = 1155;
+		var preparationBinary = '10010000011';
+		var preparationParity = '0';
+
+		console.assert( calculateDecimal( digits, 0 ) === decoderDecimal,                        'Error in calculateDecimal' );
+		console.assert( calculateDecimal( digits, 1 ) === preparationDecimal,                    'Error in calculateDecimal' );
+		console.assert( calculateBinary( digits, 0 ) === decoderBinary,                          'Error in calculateBinary' );
+		console.assert( calculateBinary( digits, 1 ) === preparationBinary,                      'Error in calculateBinary' );
+		console.assert( decimalToBinary( decoderDecimal, 0 ) === decoderBinary,                  'Error in decimalToBinary' );
+		console.assert( decimalToBinary( preparationDecimal, 1 ) === preparationBinary,          'Error in decimalToBinary' );
+		console.assert( binaryToDigits( decoderBinary, 0 ).join( '' ) === digits.join( '' ),     'Error in binaryToDigits' );
+		console.assert( binaryToDigits( preparationBinary, 1 ).join( '' ) === digits.join( '' ), 'Error in binaryToDigits' );
+	} )();
 
 });
 
