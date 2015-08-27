@@ -21,15 +21,17 @@
 				ng-model="decoderDecimal"
 				min="0"
 				max="4095"
+				ng-change="fromDecoderDecimal()"
 			/>
 			<input
 				ng-show="mode == 0"
 				class="binaryInput"
 				type="text"
-				ng-maxlength="12"
 				id="decoderBinaryInput"
 				name="decoderBinaryInput"
 				ng-model="decoderBinary"
+				ng-pattern="/^[01]{12}$/"
+				ng-change="fromDecoderBinary()"
 			/>
 			<input
 				ng-show="mode == 1"
@@ -40,24 +42,27 @@
 				ng-model="preparationDecimal"
 				min="0"
 				max="2047"
+				ng-change="fromPreparationDecimal()"
 			/>
 			<input
 				ng-show="mode == 1"
 				class="binaryInput"
 				type="text"
-				ng-maxlength="12"
 				id="preparationBinaryInput"
 				name="preparationBinaryInput"
 				ng-model="preparationBinary"
+				ng-pattern="/^[01]{11}$/"
+				ng-change="fromPreparationBinary()"
 			/>
 			<input
 				ng-show="mode == 1"
 				class="parityInput"
 				type="text"
-				ng-maxlength="1"
 				id="preparationParityInput"
 				name="preparationParityInput"
 				ng-model="preparationParity"
+				ng-pattern="/^[01]{1}$/"
+				ng-change="fromPreparationParity()"
 			/>
 		</form>
 
