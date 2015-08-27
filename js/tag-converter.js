@@ -111,16 +111,30 @@ app.controller( 'TagConverterController', function ( $scope ) {
 		}
 	};
 	$scope.fromPreparationDecimal = function () {
+		var p = $scope.checkParity();
 		$scope.preparationBinary = decimalToBinary( $scope.preparationDecimal, 1 );
-		$scope.digits = binaryToDigits( $scope.preparationBinary, $scope.preparationParity, 1 );
+		$scope.fromPreparationBinary();
+		if ( p !== $scope.checkParity() ) {
+			$scope.flipDigit( 8 );
+		}
 	};
 	$scope.fromPreparationBinary = function () {
-		if ( $scope.myForm.preparationBinaryInput.$valid ) {
+		if (
+			   $scope.myForm.preparationBinaryInput.$valid
+			&& $scope.preparationBinary !== ''
+			&& $scope.myForm.preparationParityInput.$valid
+			&& $scope.preparationParity !== ''
+		) {
 			$scope.digits = binaryToDigits( $scope.preparationBinary, $scope.preparationParity, 1 );
 		}
 	};
 	$scope.fromPreparationParity = function () {
-		if ( $scope.myForm.preparationParityInput.$valid ) {
+		if (
+			   $scope.myForm.preparationBinaryInput.$valid
+			&& $scope.preparationBinary !== ''
+			&& $scope.myForm.preparationParityInput.$valid
+			&& $scope.preparationParity !== ''
+		) {
 			$scope.digits = binaryToDigits( $scope.preparationBinary, $scope.preparationParity, 1 );
 		}
 	};
