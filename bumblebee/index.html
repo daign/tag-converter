@@ -1,0 +1,301 @@
+<!doctype html>
+<html ng-app="TagConverter">
+<head>
+	<meta charset="utf-8">
+	<title>Tag Converter</title>
+	<link rel="stylesheet" href="css/tag-converter.css">
+	<script src="https://code.angularjs.org/1.4.4/angular.min.js"></script>
+	<script src="js/tag-converter.js"></script>
+</head>
+<body>
+
+	<div ng-controller="TagConverterController as tcc">
+
+		<form name="myForm">
+			<input
+				class="numberInput"
+				type="number"
+				id="numberInput"
+				name="numberInput"
+				ng-model="id"
+				min="0"
+				max="127"
+				ng-change="toDigits()"
+			/>
+		</form>
+
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			xmlns:xlink="http://www.w3.org/1999/xlink"
+			viewBox="0,0,400,570"
+			width="400"
+			height="570"
+			class="svg"
+		>
+
+			<defs>
+				<marker
+					id="line" viewBox="0 0 10 10" refX="5" refY="5"
+					markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto"
+				>
+					<path class="line" d="M 5 0 L 5 10" />
+				</marker>
+				<marker
+					id="arrow-start" viewBox="0 0 10 10" refX="5" refY="5"
+					markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto"
+				>
+					<path class="arrow" d="M 0 5 L 10 0 L 10 10 Z" />
+				</marker>
+				<marker
+					id="arrow-end" viewBox="0 0 10 10" refX="5" refY="5"
+					markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto"
+				>
+					<path class="arrow" d="M 0 0 L 10 5 L 0 10 Z" />
+				</marker>
+			</defs>
+
+			<g class="tag" transform="translate(200,200)">
+
+				<rect class="background" width="400" height="400" x="-200" y="-200" />
+
+				<!-- tag disc -->
+				<circle class="disc" r="150" cx="0" cy="0" />
+
+				<!-- ring segments -->
+				<g
+					class="segments"
+					ng-repeat="d in digits track by $index"
+					ng-attr-transform="rotate({{ $index*30-90 }})"
+				>
+					<path
+						class="{{ digits[$index] ? 'area one' : 'area zero' }}"
+						d="M 0,0 L 0,-110 A 110,110,0,0,1,55.33,-95.07 L 0,0 Z"
+						ng-click="flipDigit($index)"
+					/>
+					<text
+						class="{{ digits[$index] ? 'value one' : 'value zero' }}"
+						ng-show="showGrid"
+						transform="rotate(15)"
+						x="-8"
+						y="-75"
+					>
+						{{ digits[$index] }}
+					</text>
+				</g>
+
+				<!-- center section -->
+				<g class="center">
+					<circle class="top" r="60" cx="0" cy="0" />
+					<path class="bottom" d="M 0,0 L 60.5,0 A 60.5,60.5,0,0,1,-60.5,0 L 0,0 Z" />
+				</g>
+
+				<!-- toggle grid visibility -->
+				<g class="gridToggle" transform="translate(130,150)" ng-click="toggleShowGrid()">
+					<rect class="{{showGrid ? 'on' : 'off'}}" x="0" y="0" width="50" height="30" />
+					<text x="10" y="20">grid</text>
+				</g>
+
+				<!-- grid -->
+				<g class="grid" ng-show="showGrid">
+
+					<!-- grid lines -->
+					<g class="lines">
+						<circle r="110" cx="0" cy="0" />
+						<circle r="60" cx="0" cy="0" />
+						<path
+							ng-repeat="d in digits track by $index"
+							ng-attr-transform="rotate({{ $index*30 }})"
+							d="M 0,-60 L 0,-110"
+						/>
+					</g>
+
+					<!-- digit significance -->
+					<g
+						class="significance"
+					>
+						<g transform="rotate(-75)">
+							<text x="-4" y="-115">E</text>
+							<text class="small" x="7" y="-114">1</text>
+						</g>
+						<g transform="rotate(-45)">
+							<text x="-4" y="-115">E</text>
+							<text class="small" x="7" y="-114">2</text>
+						</g>
+						<g transform="rotate(-15)">
+							<text x="-4" y="-115">2</text>
+							<text class="small" x="6" y="-120">6</text>
+						</g>
+						<g transform="rotate(15)">
+							<text x="-4" y="-115">E</text>
+							<text class="small" x="7" y="-114">4</text>
+						</g>
+						<g transform="rotate(45)">
+							<text x="-4" y="-115">2</text>
+							<text class="small" x="6" y="-120">5</text>
+						</g>
+						<g transform="rotate(75)">
+							<text x="-4" y="-115">2</text>
+							<text class="small" x="6" y="-120">4</text>
+						</g>
+						<g transform="rotate(105)">
+							<text x="-4" y="-115">2</text>
+							<text class="small" x="6" y="-120">3</text>
+						</g>
+						<g transform="rotate(135)">
+							<text x="-4" y="-115">E</text>
+							<text class="small" x="7" y="-114">8</text>
+						</g>
+						<g transform="rotate(165)">
+							<text x="-4" y="-115">2</text>
+							<text class="small" x="6" y="-120">2</text>
+						</g>
+						<g transform="rotate(195)">
+							<text x="-4" y="-115">2</text>
+							<text class="small" x="6" y="-120">1</text>
+						</g>
+						<g transform="rotate(225)">
+							<text x="-4" y="-115">2</text>
+							<text class="small" x="6" y="-120">0</text>
+						</g>
+						<g transform="rotate(255)">
+							<text x="-4" y="-115">P</text>
+						</g>
+					</g>
+
+					<!-- direction annotations -->
+					<g class="direction">
+						<g transform="rotate(165)">
+							<path
+								d="M 0,-170 A 170,170,0,0,1,147.22,-85"
+								marker-start="url(#arrow-start)"
+								marker-end="url(#line)"
+							/>
+							<path
+								id="sigPath"
+								d="M 0,-180 A 180,180,0,0,1,155.88,-90"
+								class="align"
+							/>
+							<text><textPath xlink:href="#sigPath" startOffset="50">
+								significance
+							</textPath></text>
+						</g>
+						<g transform="rotate(-75)">
+							<path
+								d="M 0,-170 A 170,170,0,0,1,147.22,-85"
+								marker-start="url(#line)"
+								marker-end="url(#arrow-end)"
+							/>
+							<path
+								id="readPath"
+								d="M 0,-180 A 180,180,0,0,1,155.88,-90"
+								class="align"
+							/>
+							<text><textPath xlink:href="#readPath" startOffset="35">
+								reading direction
+							</textPath></text>
+						</g>
+					</g>
+
+				</g>
+
+			</g>
+
+			<!-- conversion -->
+			<g class="conversion" transform="translate(0,400)">
+
+				<!-- conversion content -->
+				<g class="content">
+					<rect class="background" width="400" height="170" x="0" y="0" />
+
+					<g transform="translate(20,35)">
+
+						<text x="0" y="0">decimal:</text>
+						<text x="210" y="0">{{ myForm.numberInput.$valid ? '' : '&#10007;' }}</text>
+						<text x="0" y="40">binary:</text>
+
+						<g
+							class="digit"
+							ng-repeat="x in dataBits track by $index"
+							ng-attr-transform="translate({{ $index*22 + 100 }},40)"
+							ng-click="flipDigit(x)"
+						>
+							<rect x="-4" y="-24" width="20" height="30" />
+							<text>{{ digits[x] }}</text>
+						</g>
+
+						<text x="0" y="80">parity:</text>
+						<g transform="translate(98,80)">
+							<text x="0" y="0">E</text>
+							<text class="small" x="15" y="2">1</text>
+							<g
+								class="digit"
+								transform="translate(32,0)"
+								ng-click="flipDigit(0)"
+							>
+								<rect x="-4" y="-24" width="20" height="30" />
+								<text>{{ digits[0] }}</text>
+							</g>
+							<text x="50" y="0">{{ checkParity( 'e1' ) ? '&#10003;' : '&#10007;' }}</text>
+						</g>
+						<g transform="translate(188,80)">
+							<text x="0" y="0">E</text>
+							<text class="small" x="15" y="2">2</text>
+							<g
+								class="digit"
+								transform="translate(32,0)"
+								ng-click="flipDigit(1)"
+							>
+								<rect x="-4" y="-24" width="20" height="30" />
+								<text>{{ digits[1] }}</text>
+							</g>
+							<text x="50" y="0">{{ checkParity( 'e2' ) ? '&#10003;' : '&#10007;' }}</text>
+						</g>
+						<g transform="translate(98,118)">
+							<text x="0" y="0">E</text>
+							<text class="small" x="15" y="2">4</text>
+							<g
+								class="digit"
+								transform="translate(32,0)"
+								ng-click="flipDigit(3)"
+							>
+								<rect x="-4" y="-24" width="20" height="30" />
+								<text>{{ digits[3] }}</text>
+							</g>
+							<text x="50" y="0">{{ checkParity( 'e4' ) ? '&#10003;' : '&#10007;' }}</text>
+						</g>
+						<g transform="translate(188,118)">
+							<text x="0" y="0">E</text>
+							<text class="small" x="15" y="2">8</text>
+							<g
+								class="digit"
+								transform="translate(32,0)"
+								ng-click="flipDigit(7)"
+							>
+								<rect x="-4" y="-24" width="20" height="30" />
+								<text>{{ digits[7] }}</text>
+							</g>
+							<text x="50" y="0">{{ checkParity( 'e8' ) ? '&#10003;' : '&#10007;' }}</text>
+						</g>
+						<g transform="translate(278,118)">
+							<text x="0" y="0">P</text>
+							<g
+								class="digit"
+								transform="translate(26,0)"
+								ng-click="flipDigit(11)"
+							>
+								<rect x="-4" y="-24" width="20" height="30" />
+								<text>{{ digits[11] }}</text>
+							</g>
+							<text x="44" y="0">{{ checkParity( 'p' ) ? '&#10003;' : '&#10007;' }}</text>
+						</g>
+					</g>
+				</g>
+
+			</g>
+
+		</svg>
+	</div>
+
+</body>
+</html>
+

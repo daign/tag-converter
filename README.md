@@ -3,7 +3,9 @@ tag-converter
 
 ### Binary tag converter with AngularJS and SVG ###
 
-[Try the converter](http://daign.github.com/tag-converter/)
+Try the converters:
+* [Bee converter](http://daign.github.com/tag-converter/bee_v1)
+* [Bumblebee converter](http://daign.github.com/tag-converter/bumblebee)
 
 ![screenshot](./screenshot.png)
 

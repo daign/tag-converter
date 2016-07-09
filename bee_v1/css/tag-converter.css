@@ -1,0 +1,52 @@
+body {
+	font-family: sans-serif;
+}
+
+.numberInput {
+	position: absolute;
+	width: 106px;
+	left: 123px;
+	top: 451px;
+	font-size: 24px;
+}
+
+.svg text          { pointer-events: none; }
+.svg marker .line  { fill: none; stroke: #666; stroke-width: 2px; }
+.svg marker .arrow { fill: #666; }
+
+.svg .tag .background { fill: #ccc; }
+.svg .tag .disc       { fill: #fff; }
+
+.svg .tag .segments .area      { cursor: pointer; }
+.svg .tag .segments .area.zero { fill: #000; }
+.svg .tag .segments .area.one  { fill: #fff; }
+
+.svg .tag .segments .value      { font-size: 24px; }
+.svg .tag .segments .value.zero { fill: #fff; }
+.svg .tag .segments .value.one  { fill: #000; }
+
+.svg .tag .center .top    { fill: #fff; }
+.svg .tag .center .bottom { fill: #000; }
+
+.svg .tag .gridToggle          { cursor: pointer; }
+.svg .tag .gridToggle rect.on  { fill: #ddd; }
+.svg .tag .gridToggle rect.off { fill: #bbb; }
+.svg .tag .gridToggle text     { fill: #777; font-size: 16px; }
+
+.svg .tag .grid .lines                   { fill: none; stroke: #999; stroke-width: 2px; }
+.svg .tag .grid .significance text       { fill: #999; font-size: 16px; }
+.svg .tag .grid .significance text.small { font-size: 10px; }
+
+.svg .tag .grid .direction path       { fill: none; stroke: #666; stroke-width: 2px; }
+.svg .tag .grid .direction path.align { stroke: none; }
+.svg .tag .grid .direction text       { fill: #666; font-size: 16px; }
+
+.svg .conversion .tab      { cursor: pointer; }
+.svg .conversion .tab.on   { fill: #ddd; }
+.svg .conversion .tab.off  { fill: #bbb; }
+.svg .conversion .tab text { fill: #777; font-size: 16px; }
+
+.svg .conversion .content text        { font-size: 22px; }
+.svg .conversion .content .background { fill: #ddd; }
+.svg .conversion .content .digit rect { fill: #fff; cursor: pointer; }
+
